@@ -18,10 +18,14 @@
     }
   },
   "homepage": "https://github.com/fejesd/node-red-contrib-deglitch",
-  "repository" : { 
-    "type" : "git",
-    "url" : "https://github.com/fejesd/node-red-contrib-deglitch.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fejesd/node-red-contrib-deglitch.git"
   },
   "author": "David Fejes",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0"
+  }
 }
