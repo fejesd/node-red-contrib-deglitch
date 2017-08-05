@@ -17,6 +17,11 @@
       "deglitch": "src/deglitch.js"
     }
   },
+  "homepage": "https://github.com/fejesd/node-red-contrib-deglitch",
+  "repository" : { 
+    "type" : "git",
+    "url" : "https://github.com/fejesd/node-red-contrib-deglitch.git"
+  },
   "author": "David Fejes",
-  "license": "MIT"
+  "license": "Apache-2.0"
 }
