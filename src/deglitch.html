@@ -1,0 +1,50 @@
+<script type="text/x-red" data-template-name="deglitch">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-mode"><i class="fa fa-tasks"></i> Behaviour</label>
+        <select id="node-input-mode">            
+            <option value=1>Watch msg.payload value</option>
+            <option value=2>Compare msg.payload as a number</option>
+        </select>        
+    </div>
+    <div class="form-row" id="time-details-for">
+        <label for="node-input-time"><i class="fa fa-clock-o"></i> Time</label>
+        <input type="text" id="node-input-time" style="text-align:end; width:50px !important">
+        <select id="node-input-timeUnits" style="width:200px !important">
+          <option value="milliseconds">Milliseconds</option>
+          <option value="seconds">Seconds</option>
+          <option value="minutes">Minutes</option>
+          <option value="hours">Hours</option>          
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="lwr-set">
+    <p>This node will filter the incoming short impulses.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('deglitch',{
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+            mode: {value:1},
+            time: {value:"5", required:true, validate:RED.validators.number()},
+            timeUnits: {value:"seconds"},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "trigger.png",
+        label: function() {
+            return this.name||"deglitch";
+        },
+        oneditprepare: function() {
+            var node = this;
+            $( "#node-input-time" ).spinner({min:1});
+        }        
+    });
+</script>
