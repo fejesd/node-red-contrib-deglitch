@@ -16,13 +16,14 @@
  
 module.exports = function(RED) {
     
-    function Deglitch(config) {
+    function Deglitch(config) {        
         RED.nodes.createNode(this,config);
         var node = this;
-        var timeout_sec = config.time;
-        if (config.timeUnits == 'milliseconds') timeout_sec *= 0.001;
-        else if (config.timeUnits == 'minutes') timeout_sec *= 60;
-        else if (config.timeUnits == 'hours') timeout_sec *= 60*60;
+        this.time = config.time||5;
+        this.timeUnits = config.timeUnits||"seconds";
+        if (this.timeUnits == 'milliseconds') this.time *= 0.001;
+        else if (this.timeUnits == 'minutes') this.time *= 60;
+        else if (this.timeUnits == 'hours') this.time *= 60*60;
 
         var topics = {};
 
@@ -54,7 +55,7 @@ module.exports = function(RED) {
                     topics[topic].value = JSON.stringify(topics[topic].message.payload);
                     topics[topic].newmessage = undefined;
                     topics[topic].timer = null;
-                }, timeout_sec*1000);
+                }, this.time*1000);
             }
         });        
     }

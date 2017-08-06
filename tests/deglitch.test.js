@@ -1,4 +1,3 @@
-'use strict';  
 /**
  * Copyright JS Foundation and other contributors, http://js.foundation
  *
@@ -18,30 +17,22 @@
 var helper = require('./helper');
 
 var should = require("should");
-
 var deglitchNode = require("../src/deglitch.js");
 
 describe('deglitch Node', function() {
 
-    var deglitchNode;
-
-
-    beforeEach(function(done) {
+    beforeEach(function(done) {        
         helper.startServer(done);
-        deglitchNode = require('../src/deglitch');
-
     });
 
-    afterEach(function() {
-        helper.unload();
+    afterEach(function(done) {
+        helper.unload().then(function() {
+            helper.stopServer(done);
+        });
     });
-
-    after(function (done) {    
-        helper.stopServer(done);
-    });
-
+    
     it('should register a new node-red node', function (done) {
-      var flow = [{id: 'node1', type: 'deglitch', name: 'deglitch', wires: [[]]}];
+      var flow = [{id: 'node1', type: 'deglitch', name: 'deglitch', time:5, timeUnits:'seconds', wires: [[]]}];
       return helper.load(deglitchNode, flow, function () {
         var n1 = helper.getNode('node1');
         n1.should.have.property('name', 'deglitch');
@@ -49,6 +40,49 @@ describe('deglitch Node', function() {
       });
     });
 
+    it('should be able to set timeout to milliseconds', function(done) {
+        var flow = [{id: 'node1', type: 'deglitch', name: 'deglitch', time:5, timeUnits:'milliseconds', wires: [[]]}];
+        return helper.load(deglitchNode, flow, function () {
+            var n1 = helper.getNode('node1');            
+            n1.should.have.property('time', 0.005);
+            done();
+      });
+    });
+
+
+    it('should be able to set timeout to seconds', function(done) {
+        var flow = [{id: 'node1', type: 'deglitch', name: 'deglitch', time:5, timeUnits:'seconds', wires: [[]]}];
+        return helper.load(deglitchNode, flow, function () {
+            var n1 = helper.getNode('node1');            
+            n1.should.have.property('time', 5);
+            done();
+      });
+    });
+
+    it('should be able to set timeout to minutes', function(done) {
+        var flow = [{id: 'node1', type: 'deglitch', name: 'deglitch', time:5, timeUnits:'minutes', wires: [[]]}];
+        return helper.load(deglitchNode, flow, function () {
+            var n1 = helper.getNode('node1');            
+            n1.should.have.property('time', 5*60);
+            done();
+      });
+    });
+
+    it('should be able to set timeout to hour', function(done) {
+        var flow = [{id: 'node1', type: 'deglitch', name: 'deglitch', time:5, timeUnits:'hours', wires: [[]]}];
+        return helper.load(deglitchNode, flow, function () {
+            var n1 = helper.getNode('node1');            
+            n1.should.have.property('time', 5*3600);
+            done();
+      });
+    });
+
+
+/*
+    it('should pass the first message without delay', function (done) {
+        done();
+    });
+*/
     
 
 });
