@@ -21,6 +21,7 @@ module.exports = function(RED) {
     function Deglitch(config) {        
         RED.nodes.createNode(this,config);
         var node = this;
+        this.mode = config.mode||1;
         this.time = config.time||5;
         this.timeUnits = config.timeUnits||"seconds";
         if (this.timeUnits == 'milliseconds') this.time *= 0.001;
@@ -32,17 +33,22 @@ module.exports = function(RED) {
         this.on('input', function(msg) {
             var payload = JSON.stringify(msg.payload);
             var topic = '';
-            if ('topic' in msg)
-                topic = msg.topic;
-            else
-                topic = 'defaulttopic';
-            if (topic == '') topic = 'emptytopic';
+            if (node.mode == 1) {
+                if ('topic' in msg)
+                    topic = msg.topic;
+                else
+                    topic = 'defaulttopic';
+                if (topic == '') topic = 'emptytopic';
+            } else {
+                topic = 'dontcare';
+            }
+
             if (!(topic in topics)) {                       // on first message, just pass immediately                
                 topics[topic] = {"value": payload, "message":msg, "timer":null};
                 node.send(msg);
                 if (debugmode) node.error('first message');
             } else if (topics[topic].timer != null) {     // timer active                
-                if (debugmode) node.error('timer is active')
+                if (debugmode) node.error('timer is active');
                 if (payload == topics[topic].value) {         // the value has just returned to the original
                     if (debugmode) node.error('  ..shut down');
                     clearTimeout(topics[topic].timer);           //so shut down the timer
@@ -62,7 +68,7 @@ module.exports = function(RED) {
                     topics[topic].value = JSON.stringify(topics[topic].message.payload);
                     topics[topic].newmessage = undefined;
                     topics[topic].timer = null;
-                }, this.time*1000);
+                }, node.time*1000);
             }
         });        
     }

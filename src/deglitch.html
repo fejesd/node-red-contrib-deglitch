@@ -22,8 +22,8 @@
     <div class="form-row">
         <label for="node-input-mode"><i class="fa fa-tasks"></i> Behaviour</label>
         <select id="node-input-mode">            
-            <option value=1>Watch msg.payload value</option>
-            <option value=2>Compare msg.payload as a number</option>
+            <option value=1>Separate messages based on their topic</option>
+            <option value=2>Don't watch topic</option>
         </select>        
     </div>
     <div class="form-row" id="time-details-for">
@@ -56,7 +56,11 @@
         outputs:1,
         icon: "trigger.png",
         label: function() {
-            return this.name||"deglitch";
+            if (this.timeUnits == 'milliseconds') v = this.time.toString()+' ms';
+            else if (this.timeUnits == 'seconds') v = this.time.toString()+' s';
+            else if (this.timeUnits == 'minutes') v = this.time.toString()+' min';
+            else if (this.timeUnits == 'hours') v = this.time.toString()+' hr';            
+            return this.name||("deglitch "+v);
         },
         oneditprepare: function() {
             var node = this;
