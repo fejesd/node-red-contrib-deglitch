@@ -1,5 +1,5 @@
 {
-  "name": "node-red-contrib-deglitch-filter",
+  "name": "node-red-contrib-deglitch",
   "version": "1.0.0",
   "description": "This node filters out short impulses or erroneous data from sensors.",
   "main": "deglitch.js",
@@ -10,7 +10,8 @@
     "deglitch",
     "filter",
     "impulse",
-    "removal"
+    "removal",
+    "node-red"
   ],
   "node-red": {
     "nodes": {
