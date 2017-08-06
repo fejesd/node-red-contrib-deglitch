@@ -47,6 +47,8 @@ module.exports = function(RED) {
                     topics[topic].newmessage = msg;
                 }
             } else {                                        // timer is inactive, this is a new event                
+                if (payload == topics[topic].value)             //dismiss same message
+                    return;
                 topics[topic].newmessage = msg;
                 topics[topic].timer = setTimeout(function(){
                     node.error('timeout');
