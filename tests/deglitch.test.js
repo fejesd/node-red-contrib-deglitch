@@ -41,6 +41,7 @@ describe('deglitch Node', function() {
         n1.should.have.property('name', 'deglitch');
         n1.should.have.property('time', 5);
         n1.should.have.property('timeUnits', 'seconds');
+        n1.should.have.property('mode', 1);
         done();
       });
     });
@@ -243,6 +244,49 @@ describe('deglitch Node', function() {
             done();
         });        
     });
+
+    it('should handle messages with different topics independently of eachother', function (done) {
+        var flow = [{id: 'node1', type: 'deglitch', name: 'deglitch', 'time':5, 'timeUnits': 'seconds', 'mode':1, wires: [['helperNode1']]},
+                   {id:"helperNode1", type:"helper", wires:[]}];
+        clock = this.clock;
+        return helper.load(deglitchNode, flow, function () {
+            var n1 = helper.getNode('node1');            
+            var h = helper.getNode('helperNode1');
+            var got = {};            
+            h.on("input", function(msg) {
+                try {                
+                    if (!(msg.topic in got)) got[msg.topic] = {};                    
+                    if (!(msg.payload in got[msg.topic])) got[msg.topic][msg.payload] = 0;
+                    got[msg.topic][msg.payload]++;                
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+            try {
+                for (i=0; i<5; i++) {                
+                    n1.receive({'payload':'hey', 'topic':'t'+i.toString()});                
+                    should.equal(got['t'+i.toString()]['hey'],1);
+                }            
+                n1.receive({'payload':'hoo', 'topic':'t0'});
+                clock.tick(1000);            
+                for (i=1; i<5; i++) {                
+                    n1.receive({'payload':'hoo', 'topic':'t'+i.toString()});                                
+                }
+                clock.tick(1000);
+                n1.receive({'payload':'hey', 'topic':'t0'});
+                clock.tick(3000);
+                should.equal('hoo' in got['t0'], false);                
+                clock.tick(1000);
+                for (i=1; i<5; i++) should.equal('hoo' in got['t'+i.toString()], true);                
+            } catch (e) {
+                console.log(e);
+            }
+
+            done();
+        });         
+    });
+
+
 
 
 });
