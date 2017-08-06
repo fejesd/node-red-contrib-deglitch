@@ -27,7 +27,8 @@ module.exports = function(RED) {
         var topics = {};
 
         this.on('input', function(msg) {
-            payload = JSON.stringify(msg.payload);
+            var payload = JSON.stringify(msg.payload);
+            var topic = '';
             if ('topic' in msg)
                 topic = msg.topic;
             else
