@@ -15,6 +15,8 @@
  **/
  
 module.exports = function(RED) {
+
+    debugmode = false;   
     
     function Deglitch(config) {        
         RED.nodes.createNode(this,config);
@@ -38,9 +40,11 @@ module.exports = function(RED) {
             if (!(topic in topics)) {                       // on first message, just pass immediately                
                 topics[topic] = {"value": payload, "message":msg, "timer":null};
                 node.send(msg);
+                if (debugmode) node.error('first message');
             } else if (topics[topic].timer != null) {     // timer active                
+                if (debugmode) node.error('timer is active')
                 if (payload == topics[topic].value) {         // the value has just returned to the original
-                    node.error('  ..shut down');
+                    if (debugmode) node.error('  ..shut down');
                     clearTimeout(topics[topic].timer);           //so shut down the timer
                     topics[topic].timer = null;                     
                 } else {                                        // the new value is not the original..                    
@@ -50,8 +54,9 @@ module.exports = function(RED) {
                 if (payload == topics[topic].value)             //dismiss same message
                     return;
                 topics[topic].newmessage = msg;
+                if (debugmode) node.error('start timer');
                 topics[topic].timer = setTimeout(function(){
-                    node.error('timeout');
+                    if (debugmode) node.error('timeout');
                     node.send(topics[topic].newmessage);
                     topics[topic].message = topics[topic].newmessage;
                     topics[topic].value = JSON.stringify(topics[topic].message.payload);
