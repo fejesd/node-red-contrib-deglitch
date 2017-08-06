@@ -38,8 +38,15 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="lwr-set">
-    <p>This node will filter the incoming short impulses.</p>
+<script type="text/x-red" data-help-name="deglitch">
+    <p>Real world sensors and inputs may be imperfect some time. They may have some spurious short invalid data which needs to be filtered out before processing. This node helps removing the unwanted signal transitions from the flow by filtering it based on payload data. <br/>
+
+A very simple example: real-world buttons and on-off switches are bouncing during the transition, creating extra on-off events in the flow. These short glitches have to be removed and this node is intended to do this. Of course, not just boolean payloads are supported but you can have any kind of object and multiple values.<br/>
+
+The node will filter the different topics independently of eachother, however this behaviour can be changed by config.
+
+For further explanation, see the <a href="http://reactivex.io/documentation/operators/debounce.html" target="new">debounce pattern</a><br/>
+    </p>
 </script>
 
 <script type="text/javascript">
